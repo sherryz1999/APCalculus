@@ -35,6 +35,7 @@ env/
 # Output files
 selected_questions.txt
 *.log
+final_verification.txt
 
 # OS
 .DS_Store
