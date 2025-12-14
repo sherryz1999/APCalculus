@@ -6,7 +6,8 @@ This script demonstrates the functionality of the question selector
 with various example scenarios.
 """
 
-from question_selector_cli import QuestionExtractor, AP_CALCULUS_AB_CHAPTERS, AP_CALCULUS_BC_ADDITIONAL
+from question_selector_cli import QuestionExtractor
+from config import AP_CALCULUS_AB_CHAPTERS, AP_CALCULUS_BC_ADDITIONAL
 import time
 
 
@@ -133,32 +134,20 @@ def demo_statistics():
     
     extractor = QuestionExtractor()
     
-    print("\nAnalyzing all test banks...")
+    print("\nAnalyzing available test banks...")
+    print(f"Test banks: {', '.join(extractor.test_banks)}")
+    print("\nNote: TB_2.pdf is not included in the repository.")
     
-    all_questions = []
+    # Use a lighter approach - just count questions per file
+    total = 0
     for tb_file in extractor.test_banks:
         questions = extractor.extract_questions_from_pdf(tb_file)
-        all_questions.extend(questions)
-        print(f"  {tb_file}: {len(questions)} questions")
+        count = len(questions)
+        total += count
+        print(f"  {tb_file}: {count} questions")
     
-    print(f"\nTotal questions: {len(all_questions)}")
-    
-    # Count questions per topic
-    topic_counts = {}
-    for q in all_questions:
-        for topic in q['topics']:
-            topic_counts[topic] = topic_counts.get(topic, 0) + 1
-    
-    print("\nQuestions by chapter:")
-    all_chapters = {**AP_CALCULUS_AB_CHAPTERS, **AP_CALCULUS_BC_ADDITIONAL}
-    for chapter_num in sorted(all_chapters.keys(), key=int):
-        count = topic_counts.get(chapter_num, 0)
-        chapter_name = all_chapters[chapter_num]
-        print(f"  Chapter {chapter_num} ({chapter_name}): {count} questions")
-    
-    # Questions with no topic identified
-    no_topic = sum(1 for q in all_questions if not q['topics'])
-    print(f"\nQuestions without identified topics: {no_topic}")
+    print(f"\nTotal questions across all test banks: {total}")
+    print("\nFor detailed topic breakdown, use the main program to search specific chapters.")
 
 
 def main():
